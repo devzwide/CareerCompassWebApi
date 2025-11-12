@@ -1,6 +1,78 @@
-@WebAPI_HostAddress = http://localhost:5267
-
-GET {{WebAPI_HostAddress}}/weatherforecast/
-Accept: application/json
-
 ###
+# CareerCompassWebApi HTTP tests (for VS Code REST Client)
+#
+# Instructions:
+# 1. Start the API (e.g., `dotnet run` from the project folder).
+# 2. Run requests in order: Register -> Login -> GetMyProfile -> UpdateMyProfile
+# 3. Save the token from the Login response and use it in subsequent requests.
+#
+
+@baseUrl = http://localhost:5267
+@token = 
+
+### Register a new user
+POST {{baseUrl}}/api/Auth/register
+Content-Type: application/json
+
+{
+	"username": "testuser",
+	"email": "testuser+restclient@example.com",
+	"password": "Password123!",
+	"firstName": "Test",
+	"lastName": "User",
+	"dateOfBirth": "1990-01-01T00:00:00"
+}
+
+### Register with the same email (expected: 400 Bad Request)
+POST {{baseUrl}}/api/Auth/register
+Content-Type: application/json
+
+{
+	"username": "testuser2",
+	"email": "testuser+restclient@example.com",
+	"password": "Password123!",
+	"firstName": "Dup",
+	"lastName": "User",
+	"dateOfBirth": "1990-01-01T00:00:00"
+}
+
+### Login (extract JWT token and copy it to @token variable above)
+POST {{baseUrl}}/api/Auth/login
+Content-Type: application/json
+
+{
+	"email": "testuser+restclient@example.com",
+	"password": "Password123!"
+}
+
+### Login with wrong password (expected: 401 Unauthorized)
+POST {{baseUrl}}/api/Auth/login
+Content-Type: application/json
+
+{
+	"email": "testuser+restclient@example.com",
+	"password": "WrongPassword"
+}
+
+### Get my profile (requires Authorization header)
+GET {{baseUrl}}/api/Users/me
+Authorization: Bearer {{token}}
+
+### Update my profile (partial update)
+PUT {{baseUrl}}/api/Users/me
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+	"username": "testuser-updated",
+	"firstName": "Testy",
+	"lastName": "User",
+	"bio": "Updated via REST client",
+	"location": "Remote",
+	"gitHubProfileUrl": "https://github.com/testuser",
+	"linkedInProfileUrl": "https://linkedin.com/in/testuser"
+}
+
+### Delete/cleanup (not implemented in API) - placeholder
+# If you implement delete in the future you can add a request here to remove the test user.
+
