@@ -8,7 +8,7 @@
 #
 
 @baseUrl = http://localhost:5267
-@token = 
+@token = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwiZW1haWwiOiJ0ZXN0dXNlcityZXN0Y2xpZW50QGV4YW1wbGUuY29tIiwiZ2l2ZW5fbmFtZSI6InRlc3R1c2VyIiwibmJmIjoxNzYyOTk0NDczLCJleHAiOjE3NjM1OTkyNzMsImlhdCI6MTc2Mjk5NDQ3MywiaXNzIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6NzE3NiIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNzYifQ.c27lDfUn0EkGx2iSE6A6PK_2hEW0gcjFDtep-w-6RqznqhevldLq-CdBNRNcwl81UV_rdUCgy8RcPIy1L3_puw
 
 ### Register a new user
 POST {{baseUrl}}/api/Auth/register
@@ -54,6 +54,11 @@ Content-Type: application/json
 	"password": "WrongPassword"
 }
 
+> {%
+  client.global.set("token", response.body.token);
+  client.log("Token set: " + client.global.get("token"));
+%}
+
 ### Get my profile (requires Authorization header)
 GET {{baseUrl}}/api/Users/me
 Authorization: Bearer {{token}}
@@ -73,6 +78,49 @@ Authorization: Bearer {{token}}
 	"linkedInProfileUrl": "https://linkedin.com/in/testuser"
 }
 
-### Delete/cleanup (not implemented in API) - placeholder
-# If you implement delete in the future you can add a request here to remove the test user.
 
+###
+### 6. Get My Notifications (Requires Auth)
+# This tests the new NotificationsController.
+# It requires a valid token from the login step.
+# It will return an empty list [] at first, which is correct.
+GET {{baseUrl}}/api/notifications/me
+Authorization: Bearer {{token}}
+
+###
+### 7. Connect GitHub Account (Requires Auth)
+# This tests the ConnectController's GitHub connection endpoint.
+# It requires a valid token from the login step.
+# It will return a URL to redirect the user to GitHub's OAuth page.
+GET {{baseUrl}}/api/connect/github
+Authorization: Bearer {{token}}
+
+### 8. Connect LinkedIn Account (Requires Auth)
+# This tests the ConnectController's LinkedIn connection endpoint.
+# It requires a valid token from the login step.
+GET {{baseUrl}}/api/connect/linkedin
+Authorization: Bearer {{token}}
+
+### 9. Trigger Profile Sync (Manual Test)
+# This would normally run automatically, but you can trigger it by restarting the API or waiting for the background service.
+# To verify, check notifications and job ready score after connecting accounts.
+
+### 10. Get My Notifications (After Sync)
+# This should now return notifications if your score was updated by the sync service.
+GET {{baseUrl}}/api/notifications/me
+Authorization: Bearer {{token}}
+
+### 11. Get My Profile (Check JobReadyScore)
+GET {{baseUrl}}/api/Users/me
+Authorization: Bearer {{token}}
+
+### 12. Get Career Recommendations (Requires Auth)
+# This tests the Smart Career Path Generator feature.
+GET {{baseUrl}}/api/career/recommendations
+Authorization: Bearer {{token}}
+
+### 13. Get Personal Roadmap for a Career (Requires Auth)
+# This tests the Personal Roadmap feature.
+# Replace {careerId} with a valid career ID from your recommendations response.
+GET {{baseUrl}}/api/roadmap/1
+Authorization: Bearer {{token}}

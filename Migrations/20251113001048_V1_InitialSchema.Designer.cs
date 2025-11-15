@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebAPI.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using WebAPI.Infrastructure.Data;
 namespace WebAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251113001048_V1_InitialSchema")]
+    partial class V1_InitialSchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,7 +64,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("RoadmapId");
 
-                    b.ToTable("Careers");
+                    b.ToTable("Career");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.CareerSkill", b =>
@@ -90,7 +93,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("SkillId");
 
-                    b.ToTable("CareerSkills");
+                    b.ToTable("CareerSkill");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.Coursework", b =>
@@ -113,7 +116,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courseworks");
+                    b.ToTable("Coursework");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.FieldOfStudy", b =>
@@ -131,7 +134,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FieldsOfStudy");
+                    b.ToTable("FieldOfStudy");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.Interest", b =>
@@ -149,68 +152,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Interests");
-                });
-
-            modelBuilder.Entity("WebAPI.Core.Entities.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Notifications");
-                });
-
-            modelBuilder.Entity("WebAPI.Core.Entities.Project", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("RepositoryUrl")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Projects");
+                    b.ToTable("Interest");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.Resource", b =>
@@ -245,7 +187,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Resources");
+                    b.ToTable("Resource");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.Roadmap", b =>
@@ -276,7 +218,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roadmaps");
+                    b.ToTable("Roadmap");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.RoadmapResource", b =>
@@ -310,7 +252,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("RoadmapId");
 
-                    b.ToTable("RoadmapResources");
+                    b.ToTable("RoadmapResource");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.Skill", b =>
@@ -342,7 +284,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Skills");
+                    b.ToTable("Skill");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.University", b =>
@@ -360,7 +302,7 @@ namespace WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Universities");
+                    b.ToTable("University");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.User", b =>
@@ -394,10 +336,6 @@ namespace WebAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("GitHubAccessToken")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
                     b.Property<string>("GitHubProfileUrl")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
@@ -414,17 +352,9 @@ namespace WebAPI.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("LinkedInAccessToken")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
-
                     b.Property<string>("LinkedInProfileUrl")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("LinkedInRefreshToken")
-                        .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
 
                     b.Property<string>("Location")
                         .HasMaxLength(100)
@@ -496,7 +426,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserCareers");
+                    b.ToTable("UserCareer");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.UserCoursework", b =>
@@ -519,7 +449,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserCourseworks");
+                    b.ToTable("UserCoursework");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.UserInterest", b =>
@@ -542,65 +472,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserInterests");
-                });
-
-            modelBuilder.Entity("WebAPI.Core.Entities.UserProject", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserProjects");
-                });
-
-            modelBuilder.Entity("WebAPI.Core.Entities.UserRoadmap", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RoadmapId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoadmapId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserRoadmaps");
+                    b.ToTable("UserInterest");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.UserRoadmapProgress", b =>
@@ -632,7 +504,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoadmapProgresses");
+                    b.ToTable("UserRoadmapProgress");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.UserSkill", b =>
@@ -661,7 +533,7 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserSkills");
+                    b.ToTable("UserSkill");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.Career", b =>
@@ -694,17 +566,6 @@ namespace WebAPI.Migrations
                     b.Navigation("Skill");
                 });
 
-            modelBuilder.Entity("WebAPI.Core.Entities.Notification", b =>
-                {
-                    b.HasOne("WebAPI.Core.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("WebAPI.Core.Entities.RoadmapResource", b =>
                 {
                     b.HasOne("WebAPI.Core.Entities.Resource", "Resource")
@@ -714,7 +575,7 @@ namespace WebAPI.Migrations
                         .IsRequired();
 
                     b.HasOne("WebAPI.Core.Entities.Roadmap", "Roadmap")
-                        .WithMany("RoadmapResources")
+                        .WithMany()
                         .HasForeignKey("RoadmapId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -796,44 +657,6 @@ namespace WebAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebAPI.Core.Entities.UserProject", b =>
-                {
-                    b.HasOne("WebAPI.Core.Entities.Project", "Project")
-                        .WithMany()
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebAPI.Core.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("WebAPI.Core.Entities.UserRoadmap", b =>
-                {
-                    b.HasOne("WebAPI.Core.Entities.Roadmap", "Roadmap")
-                        .WithMany()
-                        .HasForeignKey("RoadmapId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WebAPI.Core.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Roadmap");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("WebAPI.Core.Entities.UserRoadmapProgress", b =>
                 {
                     b.HasOne("WebAPI.Core.Entities.RoadmapResource", "RoadmapResource")
@@ -877,11 +700,6 @@ namespace WebAPI.Migrations
                     b.Navigation("CareerSkills");
 
                     b.Navigation("UserCareers");
-                });
-
-            modelBuilder.Entity("WebAPI.Core.Entities.Roadmap", b =>
-                {
-                    b.Navigation("RoadmapResources");
                 });
 
             modelBuilder.Entity("WebAPI.Core.Entities.Skill", b =>

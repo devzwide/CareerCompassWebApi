@@ -20,11 +20,16 @@ public class AuthService : IAuthService
         _tokenService = tokenService;
     }
 
-    public async Task<User> RegisterAsync(RegisterUserDto registerDto)
+    public async Task<LoginResponseDto> RegisterAsync(RegisterUserDto registerDto)
     {
         if (await _context.Users.AnyAsync(u => u.Email == registerDto.Email))
         {
             throw new Exception("Email is already taken.");
+        }
+
+        if (await _context.Users.AnyAsync(u => u.Username == registerDto.Username))
+        {
+            throw new Exception("Username is already taken.");
         }
 
         using var hmac = new HMACSHA512();
@@ -46,15 +51,18 @@ public class AuthService : IAuthService
         await _context.Users.AddAsync(user);
         await _context.SaveChangesAsync();
 
-        return user;
+        return new LoginResponseDto
+        {
+            Token = _tokenService.CreateToken(user)
+        };
     }
 
     public async Task<LoginResponseDto> LoginAsync(LoginUserDto loginDto)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == loginDto.Email);
+        var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == loginDto.EmailOrUsername || u.Username == loginDto.EmailOrUsername);
         if (user == null)
         {
-            throw new Exception("Invalid email or password.");
+            throw new Exception("Invalid credentials.");
         }
 
         using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -64,14 +72,12 @@ public class AuthService : IAuthService
         {
             if (computedHash[i] != user.PasswordHash[i])
             {
-                throw new Exception("Invalid email or password.");
+                throw new Exception("Invalid credentials.");
             }
         }
 
         return new LoginResponseDto
         {
-            Email = user.Email,
-            Username = user.Username,
             Token = _tokenService.CreateToken(user)
         };
     }

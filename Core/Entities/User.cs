@@ -5,7 +5,6 @@ namespace WebAPI.Core.Entities;
 
 public class User
 {
-    // Authentication fields
     [Key]
     public int Id { get; set; }
 
@@ -22,7 +21,7 @@ public class User
     public byte[] PasswordSalt { get; set; } = null!;
 
 
-    // Profile fields
+
     [Required, MaxLength(50)]
     public string FirstName { get; set; } = null!;
 
@@ -47,14 +46,21 @@ public class User
     [MaxLength(100)] 
     public string? Occupation { get; set; }
 
-    [MaxLength(100)] 
+    [MaxLength(100)]
     public string? Industry { get; set; }
+    
+    
+    
+    public int? UniversityId { get; set; }
+    public University? University { get; set; }
 
-    [MaxLength(2000)]
-    public string? AcademicBackground { get; set; }
+    public int? FieldOfStudyId { get; set; }
+    public FieldOfStudy? FieldOfStudy { get; set; }
 
-    [MaxLength(1000)]
-    public string? PersonalInterests { get; set; }
+    public ICollection<UserCoursework> UserCourseworks { get; set; } = new List<UserCoursework>();
+    public ICollection<UserInterest> UserInterests { get; set; } = new List<UserInterest>();
+
+
 
     [Url, MaxLength(255)]
     public string? GitHubProfileUrl { get; set; }
@@ -63,8 +69,25 @@ public class User
     public string? LinkedInProfileUrl { get; set; }
 
 
-    // Tracking fields
+    [Required]
+    public double JobReadyScore { get; set; } = 0.0;
+
+    // OAuth tokens (should be encrypted at rest)
+    [MaxLength(512)]
+    public string? GitHubAccessToken { get; set; }
+
+    [MaxLength(512)]
+    public string? LinkedInAccessToken { get; set; }
+
+    [MaxLength(512)]
+    public string? LinkedInRefreshToken { get; set; }
+
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
+
+
+    public ICollection<UserCareer> UserCareers { get; set; } = new List<UserCareer>();
+    public ICollection<UserSkill> UserSkills { get; set; } = new List<UserSkill>();
+    public ICollection<UserRoadmapProgress> UserRoadmapProgresses { get; set; } = new List<UserRoadmapProgress>();
 }

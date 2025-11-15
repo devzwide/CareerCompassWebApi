@@ -19,7 +19,4 @@ public class RegisterUserDto
     
     [Required, MaxLength(50)] 
     public string LastName { get; set; } = null!;
-    
-    [Required] 
-    public DateTime DateOfBirth { get; set; }
 }

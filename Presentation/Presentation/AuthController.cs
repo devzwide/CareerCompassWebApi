@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http;
+using System;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Application.Dtos;
 using WebAPI.Application.Interfaces;
@@ -21,18 +21,8 @@ namespace WebAPI.Presentation.Presentation
         {
             try
             {
-                var user = await _authService.RegisterAsync(registerDto);
-                var userProfileDto = new UserProfileDto
-                {
-                    Id = user.Id,
-                    Username = user.Username,
-                    Email = user.Email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    DateOfBirth = user.DateOfBirth
-                };
-                
-                return Ok(userProfileDto);
+                var response = await _authService.RegisterAsync(registerDto);
+                return Ok(response);
             }
             catch (Exception ex)
             {

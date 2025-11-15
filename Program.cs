@@ -12,12 +12,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+
+
+/* 
+    Authentication Dependancy Injection (DI) Services
+    Authentication Middleware Configuration
+*/
 builder.Services.AddScoped<IAuthService, AuthService>(); 
 builder.Services.AddScoped<ITokenService, TokenService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -38,13 +44,42 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+builder.Services.AddScoped<WebAPI.Application.Interfaces.ICareerService, WebAPI.Application.Services.CareerService>();
+builder.Services.AddScoped<WebAPI.Application.Interfaces.IRoadmapService, WebAPI.Application.Services.RoadmapService>();
+builder.Services.AddScoped<WebAPI.Application.Interfaces.ISkillGapService, WebAPI.Application.Services.SkillGapService>();
+
+// Register the new API client services
+builder.Services.AddScoped<GitHubService>();
+builder.Services.AddScoped<LinkedInService>();
+
+// Register HttpClient ONLY for LinkedIn.
+// GitHubService uses the Octokit client library directly, so it doesn't need a factory registration.
+builder.Services.AddHttpClient("LinkedIn", client =>
+{
+    client.BaseAddress = new Uri("https://api.linkedin.com/v2/");
+});
+builder.Services.AddScoped<WebAPI.Application.Services.GitHubService>();
+builder.Services.AddScoped<WebAPI.Application.Services.LinkedInService>();
+
+// Register the background service
+builder.Services.AddHostedService<ProfileSyncService>();
+
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
-    // Skip HTTPS redirection in development for easier testing
+    app.UseSwagger();
+    app.UseSwaggerUI();
+
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var dbContext = services.GetRequiredService<WebAPI.Infrastructure.Data.ApplicationDbContext>();
+        
+        // Run the seeder
+        WebAPI.Infrastructure.Data.DataSeeder.Seed(dbContext);
+    }
 }
 else
 {
