@@ -1,0 +1,6 @@
+@CareerCompassWebApi_HostAddress = http://localhost:5150
+
+GET {{CareerCompassWebApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
