@@ -14,6 +14,12 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasIndex(e => e.Username).IsUnique();
+            entity.HasIndex(e => e.Email).IsUnique();
+        });
     }
 
     public DbSet<User> Users { get; set; }
@@ -25,6 +31,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<UserRoadmapProgress> UserRoadmapProgresses { get; set; }
     public DbSet<UserSkill> UserSkills { get; set; }
 
+    public DbSet<Coursework> Courseworks { get; set; }
     public DbSet<FieldOfStudy> FieldsOfStudy { get; set; }
     public DbSet<University> Universities { get; set; }
 

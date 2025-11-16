@@ -1,6 +1,120 @@
 @CareerCompassWebApi_HostAddress = http://localhost:5150
-
-GET {{CareerCompassWebApi_HostAddress}}/weatherforecast/
-Accept: application/json
+@myToken = eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwiZW1haWwiOiJ0ZXN0dXNlckBleGFtcGxlLmNvbSIsImdpdmVuX25hbWUiOiJ0ZXN0dXNlciIsIm5iZiI6MTc2MzMyNzI0NCwiZXhwIjoxNzYzOTMyMDQ0LCJpYXQiOjE3NjMzMjcyNDQsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjcxNzYiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDo3MTc2In0.0eaFudFzXZqbPYLjQ_6g_CCUMSl5BRtxmVLQ5YuxR6TC3Fx_P5D1Uyq-sD96ijy869-6aRyouGYR8gp9buEA3g
 
 ###
+# ==================================================================
+# Auth Controller (Public)
+#
+# ==================================================================
+
+### 1. Register a new user
+# (Only run this once, or change the email/username)
+POST {{CareerCompassWebApi_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "password": "Password123!",
+  "firstName": "Test",
+  "lastName": "User"
+}
+
+### 2. Log in and capture the JWT token
+POST {{CareerCompassWebApi_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "emailOrUsername": "testuser@example.com",
+  "password": "Password123!"
+}
+
+# This script captures the token from the response body
+# and saves it to the @myToken variable.
+
+###
+# ==================================================================
+# Profile Controller (Protected)
+#
+# ==================================================================
+#
+### 3. Get my profile (Protected)
+GET {{CareerCompassWebApi_HostAddress}}/api/Profile/me
+Authorization: Bearer {{myToken}}
+
+
+### 4. Update my profile (Protected)
+#
+# Note: Adjust UniversityId/FieldOfStudyId to match your database
+PUT {{CareerCompassWebApi_HostAddress}}/api/Profile/me
+Content-Type: application/json
+Authorization: Bearer {{myToken}}
+
+{
+  "firstName": "Test",
+  "lastName": "User-Updated",
+  "bio": "This is my new bio. I am a junior developer.",
+  "location": "Durban, South Africa",
+  "gitHubProfileUrl": "https://github.com/testuser",
+  "linkedInProfileUrl": "https://linkedin.com/in/testuser",
+  "universityId": 1,
+  "fieldOfStudyId": 1
+}
+
+###
+# ==================================================================
+# Career Controller (Protected)
+#
+# ==================================================================
+
+### 5. Get Career Recommendations (Protected)
+GET {{CareerCompassWebApi_HostAddress}}/api/career/recommendations
+Authorization: Bearer {{myToken}}
+
+
+### 6. Get Skill Gap for a Career (Protected)
+# Change @careerId to match a career in your database
+@careerId = 1
+GET {{CareerCompassWebApi_HostAddress}}/api/career/{{careerId}}/skillgap
+Authorization: Bearer {{myToken}}
+
+
+###
+# ==================================================================
+# Roadmap Controller (Protected)
+#
+# ==================================================================
+
+### 7. Get Roadmap for a Career (Protected)
+# Uses the @careerId variable from above
+GET {{CareerCompassWebApi_HostAddress}}/api/roadmap/{{careerId}}
+Authorization: Bearer {{myToken}}
+
+
+### 8. Toggle a Roadmap Step (Protected)
+# Change @stepId to match a roadmap step in your database
+@stepId = 1
+PATCH {{CareerCompassWebApi_HostAddress}}/api/roadmap/{{stepId}}/toggle
+Authorization: Bearer {{myToken}}
+
+
+###
+# ==================================================================
+# Connect Controller (Protected)
+#
+# ==================================================================
+
+### 9. Connect GitHub Account (Protected)
+# This test assumes you will manually paste in an
+# OAuth token you get from your frontend flow.
+POST {{CareerCompassWebApi_HostAddress}}/api/connect/github
+Content-Type: application/json
+Authorization: Bearer {{myToken}}
+
+"your-github-oauth-token-goes-here"
+
+
+### 10. Get GitHub Repos (Protected)
+# (Run this after step 9)
+GET {{CareerCompassWebApi_HostAddress}}/api/connect/github/repos
+Authorization: Bearer {{myToken}}

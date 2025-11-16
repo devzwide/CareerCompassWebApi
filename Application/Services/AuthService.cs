@@ -59,7 +59,8 @@ public class AuthService : IAuthService
 
     public async Task<LoginResponseDto> LoginAsync(LoginDto loginDto)
     {
-        var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == loginDto.EmailOrUsername || u.Username == loginDto.EmailOrUsername);
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginDto.EmailOrUsername || u.Username == loginDto.EmailOrUsername);
+        
         if (user == null)
         {
             throw new Exception("Invalid credentials.");
