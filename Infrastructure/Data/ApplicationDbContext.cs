@@ -27,4 +27,15 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<FieldOfStudy> FieldsOfStudy { get; set; }
     public DbSet<University> Universities { get; set; }
+
+    public DbSet<Career> Careers { get; set; }
+    public DbSet<CareerSkill> CareerSkills { get; set; }
+
+
+    public DbSet<Interest> Interests { get; set; }
+    public DbSet<Project> Projects { get; set; }
+    public DbSet<Roadmap> Roadmaps { get; set; }
+    public DbSet<RoadmapResource> RoadmapResources { get; set; }
+    public DbSet<Skill> Skills { get; set; }
+
 }
