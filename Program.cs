@@ -43,6 +43,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Dependency Injection of Profile Services
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
+// Dependency Injection of Career Path Services
+builder.Services.AddScoped<ICareerService, CareerService>();
+builder.Services.AddScoped<ISkillGapService, SkillGapService>();
+builder.Services.AddScoped<IRoadmapService, RoadmapService>();
+
 
 // For frontend development server to access the API
 builder.Services.AddCors(options =>

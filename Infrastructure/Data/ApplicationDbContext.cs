@@ -30,12 +30,14 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Career> Careers { get; set; }
     public DbSet<CareerSkill> CareerSkills { get; set; }
+    public DbSet<JobMarketSkill> JobMarketSkills { get; set; }
 
 
     public DbSet<Interest> Interests { get; set; }
     public DbSet<Project> Projects { get; set; }
     public DbSet<Roadmap> Roadmaps { get; set; }
     public DbSet<RoadmapResource> RoadmapResources { get; set; }
+    public DbSet<Resource> Resources { get; set; }
     public DbSet<Skill> Skills { get; set; }
 
 }

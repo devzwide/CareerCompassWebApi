@@ -3,7 +3,7 @@ using CareerCompassWebApi.Application.Dtos;
 
 namespace CareerCompassWebApi.Application.Interfaces;
 
-public interface ISkillGapService
+public interface IRoadmapService
 {
-    Task<SkillGapAnalysisDto?> AnalyzeSkillGapAsync(int userId, int careerId);
+    Task<RoadmapDto?> GetRoadmapForCareerAsync(int careerId);
 }
