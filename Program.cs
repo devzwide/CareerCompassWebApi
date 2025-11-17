@@ -14,7 +14,6 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Dependency Injection of Authentication Services
 builder.Services.AddScoped<IAuthService, AuthService>(); 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -40,22 +39,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 
-// Dependency Injection of Profile Services
 builder.Services.AddScoped<IProfileService, ProfileService>();
 
-// Dependency Injection of Career Path Services
 builder.Services.AddScoped<ICareerService, CareerService>();
 builder.Services.AddScoped<ISkillGapService, SkillGapService>();
 builder.Services.AddScoped<IRoadmapService, RoadmapService>();
 
 
-// For frontend development server to access the API
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
         policy =>
         {
-            policy.WithOrigins("http://localhost:3000") // <-- Your React app's URL
+            policy.WithOrigins("http://localhost:5173") 
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -64,9 +60,28 @@ builder.Services.AddCors(options =>
     
 var app = builder.Build();
 
+{ 
+    using var scope = app.Services.CreateScope();
+    var services = scope.ServiceProvider;
+    
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        
+        await Seed.SeedDataAsync(context);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred during database seeding.");
+    }
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+
+    
 } else
 {
     app.UseHttpsRedirection();
