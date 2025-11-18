@@ -99,6 +99,22 @@ namespace CareerCompassWebApi.Infrastructure.Data
             await context.SaveChangesAsync();
         }
 
+        private static async Task SeedCareerFieldsOfStudyAsync(ApplicationDbContext context)
+        {
+            if (await context.CareerFieldsOfStudy.AnyAsync()) return;
+
+            var seCareer = await context.Careers.FirstOrDefaultAsync(c => c.Title == "Software Engineer");
+            var csField = await context.FieldsOfStudy.FirstOrDefaultAsync(f => f.Name == "Computer Science");
+
+            if (seCareer != null && csField != null)
+            {
+                await context.CareerFieldsOfStudy.AddAsync(
+                    new CareerFieldOfStudy { Career = seCareer, FieldOfStudy = csField }
+                );
+                await context.SaveChangesAsync();
+            }
+        }
+
         private static async Task SeedResourcesAsync(ApplicationDbContext context)
         {
             if (await context.Resources.AnyAsync()) return;
@@ -214,5 +230,7 @@ namespace CareerCompassWebApi.Infrastructure.Data
             await context.RoadmapResources.AddRangeAsync(roadmapResources);
             await context.SaveChangesAsync();
         }
+
+
     }
 }

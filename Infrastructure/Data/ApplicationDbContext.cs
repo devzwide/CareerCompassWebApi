@@ -38,7 +38,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<Career> Careers { get; set; }
     public DbSet<CareerSkill> CareerSkills { get; set; }
     public DbSet<JobMarketSkill> JobMarketSkills { get; set; }
-
+    public DbSet<CareerFieldOfStudy> CareerFieldsOfStudy { get; set; }
+    public DbSet<CareerCoursework> CareerCourseworks { get; set; }
+    public DbSet<CourseworkSkill> CourseworkSkills { get; set; }
+    public DbSet<ProjectSkill> ProjectSkills { get; set; }
 
     public DbSet<Interest> Interests { get; set; }
     public DbSet<Project> Projects { get; set; }

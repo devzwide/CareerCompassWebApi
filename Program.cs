@@ -45,6 +45,19 @@ builder.Services.AddScoped<ICareerService, CareerService>();
 builder.Services.AddScoped<ISkillGapService, SkillGapService>();
 builder.Services.AddScoped<IRoadmapService, RoadmapService>();
 
+builder.Services.AddScoped<IProfileService, ProfileService>();
+
+// Add these services for the Proof of Work Tracker
+builder.Services.AddHttpClient(); // Required for LinkedInService
+builder.Services.AddHttpClient("LinkedIn", client =>
+{
+    client.BaseAddress = new Uri("https://api.linkedin.com/");
+});
+builder.Services.AddSingleton<GithubService>(); // Singleton is fine as Octokit client is thread-safe
+builder.Services.AddScoped<LinkedInService>(); 
+builder.Services.AddScoped<IProfileEnrichmentService, ProfileEnrichmentService>();
+
+builder.Services.AddScoped<ICareerService, CareerService>();
 
 builder.Services.AddCors(options =>
 {
